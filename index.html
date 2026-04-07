@@ -1,10 +1,185 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mi primera web</title>
+  <title>SUFFRIDO_999_XIT</title>
 </head>
 <body>
-  <h1>🔥 Mi primera página web 🔥</h1>
-  <p>Hecha con GitHub Pages</p>
+  <h1>🔥 SUFFRIDO_999_XIT  🔥</h1>
+  <p>Hecha por el mejor </p>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Referral Hub</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Caja principal */
+.container {
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 12px;
+  width: 320px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 6px;
+}
+
+/* Botón */
+button {
+  width: 100%;
+  padding: 10px;
+  background: #22c55e;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Links */
+.switch {
+  text-align: center;
+  margin-top: 10px;
+  cursor: pointer;
+  color: #38bdf8;
+}
+
+.hidden {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LOGIN -->
+  <div id="loginBox">
+    <h2>Login</h2>
+    <input type="text" id="loginUser" placeholder="Usuario">
+    <input type="password" id="loginPass" placeholder="Contraseña">
+    <button onclick="login()">Entrar</button>
+
+    <div class="switch" onclick="showRegister()">
+      Crear cuenta
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="registerBox" class="hidden">
+    <h2>Registro</h2>
+    <input type="text" id="regUser" placeholder="Usuario">
+    <input type="password" id="regPass" placeholder="Contraseña">
+    <button onclick="register()">Registrarse</button>
+
+    <div class="switch" onclick="showLogin()">
+      Ya tengo cuenta
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
+    <h2>Bienvenido</h2>
+    <p id="userText"></p>
+
+    <p>Tu link de referido:</p>
+    <input id="refLink" readonly>
+
+    <button onclick="logout()">Cerrar sesión</button>
+  </div>
+
+</div>
+
+<script>
+
+// Cambiar vistas
+function showRegister() {
+  loginBox.classList.add("hidden");
+  registerBox.classList.remove("hidden");
+}
+
+function showLogin() {
+  registerBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
+}
+
+// REGISTRO
+function register() {
+  let user = regUser.value;
+  let pass = regPass.value;
+
+  if (!user || !pass) {
+    alert("Llena todo");
+    return;
+  }
+
+  localStorage.setItem(user, pass);
+  alert("Cuenta creada");
+  showLogin();
+}
+
+// LOGIN
+function login() {
+  let user = loginUser.value;
+  let pass = loginPass.value;
+
+  let savedPass = localStorage.getItem(user);
+
+  if (savedPass === pass) {
+    enterDashboard(user);
+  } else {
+    alert("Datos incorrectos");
+  }
+}
+
+// DASHBOARD
+function enterDashboard(user) {
+  loginBox.classList.add("hidden");
+  registerBox.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+
+  userText.innerText = "Usuario: " + user;
+
+  // Crear link de referido
+  let link = window.location.origin + "?ref=" + user;
+  refLink.value = link;
+}
+
+// LOGOUT
+function logout() {
+  location.reload();
+}
+
+// CAPTURAR REFERIDO
+let params = new URLSearchParams(window.location.search);
+let ref = params.get("ref");
+
+if (ref) {
+  localStorage.setItem("referido", ref);
+}
+
+</script>
+
 </body>
 </html>
