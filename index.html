@@ -1,184 +1,153 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>SUFFRIDO_999_XIT</title>
-</head>
-<body>
-  <h1>🔥SUFFRIDO_999_XIT🔥</h1>
-  <p>999</p>
-</body>
-</html>
-<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Referral Hub</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mod Store</title>
 <style>
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: #0f172a;
   color: white;
+}
+header {
+  background: #020617;
+  padding: 15px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+.container {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+.card {
+  background: #1e293b;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+.card-content {
+  padding: 15px;
+}
+.card h3 {
+  margin: 0;
+}
+.price {
+  color: #22c55e;
+  font-size: 20px;
+  margin: 10px 0;
+}
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #22c55e;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+.login {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
-
-/* Caja principal */
-.container {
+.login-box {
   background: #1e293b;
   padding: 30px;
-  border-radius: 12px;
-  width: 320px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  border-radius: 15px;
+  width: 300px;
 }
-
-/* Inputs */
 input {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
+  border-radius: 10px;
   border: none;
-  border-radius: 6px;
 }
-
-/* Botón */
-button {
-  width: 100%;
-  padding: 10px;
-  background: #22c55e;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* Links */
-.switch {
-  text-align: center;
-  margin-top: 10px;
-  cursor: pointer;
-  color: #38bdf8;
-}
-
 .hidden {
   display: none;
 }
 </style>
 </head>
-
 <body>
 
+<div id="login" class="login">
+  <div class="login-box">
+    <h2>Login</h2>
+    <input type="text" placeholder="Usuario">
+    <input type="password" placeholder="Contraseña">
+    <button onclick="entrar()">Entrar</button>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<header>MOD MENU STORE</header>
 <div class="container">
 
-  <!-- LOGIN -->
-  <div id="loginBox">
-    <h2>Login</h2>
-    <input type="text" id="loginUser" placeholder="Usuario">
-    <input type="password" id="loginPass" placeholder="Contraseña">
-    <button onclick="login()">Entrar</button>
-
-    <div class="switch" onclick="showRegister()">
-      Crear cuenta
-    </div>
+<div class="card">
+  <img src="imagen1.jpg">
+  <div class="card-content">
+    <h3>Cuban Mods</h3>
+    <div class="price">$0</div>
+    <button>Comprar</button>
   </div>
+</div>
 
-  <!-- REGISTER -->
-  <div id="registerBox" class="hidden">
-    <h2>Registro</h2>
-    <input type="text" id="regUser" placeholder="Usuario">
-    <input type="password" id="regPass" placeholder="Contraseña">
-    <button onclick="register()">Registrarse</button>
-
-    <div class="switch" onclick="showLogin()">
-      Ya tengo cuenta
-    </div>
+<div class="card">
+  <img src="imagen2.jpg">
+  <div class="card-content">
+    <h3>Pato Team</h3>
+    <div class="price">$0</div>
+    <button>Comprar</button>
   </div>
+</div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="hidden">
-    <h2>Bienvenido</h2>
-    <p id="userText"></p>
-
-    <p>Tu link de referido:</p>
-    <input id="refLink" readonly>
-
-    <button onclick="logout()">Cerrar sesión</button>
+<div class="card">
+  <img src="imagen3.jpg">
+  <div class="card-content">
+    <h3>BR Mods</h3>
+    <div class="price">$0</div>
+    <button>Comprar</button>
   </div>
+</div>
 
+<div class="card">
+  <img src="imagen4.jpg">
+  <div class="card-content">
+    <h3>HG Cheats</h3>
+    <div class="price">$0</div>
+    <button>Comprar</button>
+  </div>
+</div>
+
+<div class="card">
+  <img src="imagen5.jpg">
+  <div class="card-content">
+    <h3>Death X Loader</h3>
+    <div class="price">$0</div>
+    <button>Comprar</button>
+  </div>
+</div>
+
+</div>
 </div>
 
 <script>
-
-// Cambiar vistas
-function showRegister() {
-  loginBox.classList.add("hidden");
-  registerBox.classList.remove("hidden");
+function entrar() {
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
 }
-
-function showLogin() {
-  registerBox.classList.add("hidden");
-  loginBox.classList.remove("hidden");
-}
-
-// REGISTRO
-function register() {
-  let user = regUser.value;
-  let pass = regPass.value;
-
-  if (!user || !pass) {
-    alert("Llena todo");
-    return;
-  }
-
-  localStorage.setItem(user, pass);
-  alert("Cuenta creada");
-  showLogin();
-}
-
-// LOGIN
-function login() {
-  let user = loginUser.value;
-  let pass = loginPass.value;
-
-  let savedPass = localStorage.getItem(user);
-
-  if (savedPass === pass) {
-    enterDashboard(user);
-  } else {
-    alert("Datos incorrectos");
-  }
-}
-
-// DASHBOARD
-function enterDashboard(user) {
-  loginBox.classList.add("hidden");
-  registerBox.classList.add("hidden");
-  dashboard.classList.remove("hidden");
-
-  userText.innerText = "Usuario: " + user;
-
-  // Crear link de referido
-  let link = window.location.origin + "?ref=" + user;
-  refLink.value = link;
-}
-
-// LOGOUT
-function logout() {
-  location.reload();
-}
-
-// CAPTURAR REFERIDO
-let params = new URLSearchParams(window.location.search);
-let ref = params.get("ref");
-
-if (ref) {
-  localStorage.setItem("referido", ref);
-}
-
 </script>
 
 </body>
