@@ -3,150 +3,289 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mod Store SUFRIDO_999_XIT</title>
+<title>Shop X</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+
 <style>
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(circle at top, #001f3f, #000);
+    color: white;
 }
-header {
-  background: #020617;
-  padding: 15px;
-  text-align: center;
-  font-size: 24px;
-  font-weight: bold;
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background: rgba(0,0,0,0.8);
+    box-shadow: 0 0 15px #00aaff;
 }
+
+/* PRODUCTOS */
 .container {
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
 }
+
+/* 🔥 CARD PRO */
 .card {
-  background: #1e293b;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    background: rgba(255,255,255,0.05);
+    border-radius: 18px;
+    overflow: hidden;
+    text-align: center;
+    border: 1px solid #00aaff40;
+    box-shadow: 0 0 15px #00aaff30;
+    transition: 0.3s;
 }
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #00aaff;
+}
+
+/* 🔥 IMÁGENES GRANDES */
 .card img {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
 }
-.card-content {
-  padding: 15px;
+
+/* TEXTO */
+.card h4 {
+    margin: 10px 0;
+    text-shadow: 0 0 8px #00aaff;
 }
-.card h3 {
-  margin: 0;
+
+/* BOTONES PRO */
+.btn {
+    background: linear-gradient(45deg, #00aaff, #005577);
+    border: none;
+    padding: 10px;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    margin: 10px;
+    box-shadow: 0 0 10px #00aaff80;
+    transition: 0.3s;
 }
-.price {
-  color: #22c55e;
-  font-size: 20px;
-  margin: 10px 0;
+
+.btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 20px #00aaff;
 }
-button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  background: #22c55e;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
+
+/* PANEL */
+.panel {
+    position: fixed;
+    right: -100%;
+    top: 0;
+    width: 270px;
+    height: 100%;
+    background: #0a0a0a;
+    padding: 15px;
+    transition: 0.3s;
+    box-shadow: -5px 0 20px #00aaff;
 }
-.login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+
+.panel.active {
+    right: 0;
 }
-.login-box {
-  background: #1e293b;
-  padding: 30px;
-  border-radius: 15px;
-  width: 300px;
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.9);
+    justify-content:center;
+    align-items:center;
 }
+
+.modal-box {
+    background:#111;
+    padding:25px;
+    border-radius:15px;
+    width:90%;
+    max-width:300px;
+    text-align:center;
+    box-shadow: 0 0 20px #00aaff;
+}
+
+/* INPUT */
 input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border: none;
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: none;
 }
-.hidden {
-  display: none;
+
+/* LISTA */
+#contenido p {
+    background: #111;
+    padding: 8px;
+    border-radius: 10px;
+    margin: 5px 0;
+    box-shadow: 0 0 10px #00aaff30;
 }
 </style>
 </head>
+
 <body>
 
-<div id="login" class="login">
-  <div class="login-box">
-    <h2>Login</h2>
-    <input type="text" placeholder="Usuario">
-    <input type="password" placeholder="Contraseña">
-    <button onclick="entrar()">Entrar</button>
-  </div>
+<!-- HEADER -->
+<div class="header">
+    <h3>SHOP X</h3>
+    <div>
+        🛒 <span id="count">0</span>
+        <button class="btn" onclick="abrirSoporte()">SOPORTE</button>
+    </div>
 </div>
 
-<div id="app" class="hidden">
-<header>MOD MENU STORE</header>
+<!-- PRODUCTOS -->
 <div class="container">
 
-<div class="card">
-  <img src="imagen1.jpg">
-  <div class="card-content">
-    <h3>Cuban Mods</h3>
-    <div class="price">$10</div>
-    <button>Comprar</button>
-  </div>
-</div>
+    <div class="card">
+        <img src="img1.jpg">
+        <h4>GELO MINI (MAS DE 40 PAREDES) </h4>
+        <button class="btn" onclick="abrirCarrito()">AGREGAR</button>
+    </div>
 
-<div class="card">
-  <img src="imagen2.jpg">
-  <div class="card-content">
-    <h3>Pato Team</h3>
-    <div class="price">$10</div>
-    <button>Comprar</button>
-  </div>
-</div>
+    <div class="card">
+        <img src="img2.jpg">
+        <h4>Producto 2</h4>
+        <button class="btn" onclick="abrirCarrito()">AGREGAR</button>
+    </div>
 
-<div class="card">
-  <img src="imagen3.jpg">
-  <div class="card-content">
-    <h3>BR Mods</h3>
-    <div class="price">$10</div>
-    <button>Comprar</button>
-  </div>
-</div>
+    <div class="card">
+        <img src="img3.jpg">
+        <h4>Producto 3</h4>
+        <button class="btn" onclick="abrirCarrito()">AGREGAR</button>
+    </div>
 
-<div class="card">
-  <img src="imagen4.jpg">
-  <div class="card-content">
-    <h3>HG Cheats</h3>
-    <div class="price">$10</div>
-    <button>Comprar</button>
-  </div>
-</div>
+    <div class="card">
+        <img src="img4.jpg">
+        <h4>Producto 4</h4>
+        <button class="btn" onclick="abrirCarrito()">AGREGAR</button>
+    </div>
 
-<div class="card">
-  <img src="imagen5.jpg">
-  <div class="card-content">
-    <h3>Death X Loader</h3>
-    <div class="price">$10</div>
-    <button>Comprar</button>
-  </div>
-</div>
+    <div class="card">
+        <img src="img5.jpg">
+        <h4>Producto 5</h4>
+        <button class="btn" onclick="abrirCarrito()">AGREGAR</button>
+    </div>
+
+    <div class="card">
+        <img src="img6.jpg">
+        <h4>Producto 6</h4>
+        <button class="btn" onclick="abrirCarrito()">AGREGAR</button>
+    </div>
+
+    <div class="card">
+        <img src="img7.jpg">
+        <h4>Producto 7</h4>
+        <button class="btn" onclick="abrirCarrito()">AGREGAR</button>
+    </div>
 
 </div>
+
+<!-- PANEL -->
+<div id="panel" class="panel">
+    <h3>SOPORTE</h3>
+    <button class="btn" onclick="cerrarPanel()">⬅ VOLVER</button>
+    <div id="contenido"></div>
+</div>
+
+<!-- MODAL SOPORTE -->
+<div id="modalSoporte" class="modal">
+    <div class="modal-box">
+        <h3>CÓDIGO APENAS PARA MODERADORES DA PÁGINA</h3>
+        <input id="codigoInput" placeholder="Código">
+        <button class="btn" onclick="verificarCodigo()">Entrar</button>
+        <p onclick="cerrarModal('modalSoporte')" style="color:red;cursor:pointer;">Cancelar</p>
+    </div>
+</div>
+
+<!-- MODAL CARRITO -->
+<div id="modalCarrito" class="modal">
+    <div class="modal-box">
+        <h3>PON TU NÚMERO</h3>
+        <input id="numeroInput" placeholder="Número">
+        <button class="btn" onclick="confirmarCompra()">Agregar</button>
+        <p onclick="cerrarModal('modalCarrito')" style="color:red;cursor:pointer;">Cancelar</p>
+    </div>
 </div>
 
 <script>
-function entrar() {
-  document.getElementById('login').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
+let count = 0;
+let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+
+// CARRITO
+function abrirCarrito(){
+    document.getElementById("modalCarrito").style.display="flex";
+}
+
+function confirmarCompra(){
+    let numero = document.getElementById("numeroInput").value.trim();
+
+    if(numero === "") return;
+
+    count++;
+    document.getElementById("count").innerText = count;
+
+    clientes.push(numero);
+    localStorage.setItem("clientes", JSON.stringify(clientes));
+
+    cerrarModal("modalCarrito");
+    document.getElementById("numeroInput").value="";
+}
+
+// SOPORTE
+function abrirSoporte(){
+    document.getElementById("modalSoporte").style.display="flex";
+}
+
+function cerrarModal(id){
+    document.getElementById(id).style.display="none";
+}
+
+function verificarCodigo(){
+    let codigo = document.getElementById("codigoInput").value.trim();
+
+    if(codigo === "ALEJOVIP_FF"){
+        cerrarModal("modalSoporte");
+        document.getElementById("panel").classList.add("active");
+        mostrar();
+    } else {
+        alert("Código incorrecto ❌");
+    }
+}
+
+function cerrarPanel(){
+    document.getElementById("panel").classList.remove("active");
+}
+
+// MOSTRAR
+function mostrar(){
+    let cont = document.getElementById("contenido");
+    cont.innerHTML = "<h4>NÚMEROS:</h4>";
+
+    if(clientes.length === 0){
+        cont.innerHTML += "<p>No hay datos aún</p>";
+        return;
+    }
+
+    clientes.forEach(c=>{
+        cont.innerHTML += "<p>📱 "+c+"</p>";
+    });
 }
 </script>
 
