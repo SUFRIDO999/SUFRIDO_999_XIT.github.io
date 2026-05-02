@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>DETALLITOS VIVI</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0a0a0a;
+    color: white;
+    margin: 0;
+}
+header {
+    background: #111;
+    padding: 15px;
+    text-align: center;
+    font-size: 24px;
+    color: gold;
+}
+.container {
+    display: none;
+    padding: 20px;
+}
+.productos, .factura {
+    flex: 1;
+    margin: 10px;
+    background: #111;
+    padding: 15px;
+    border-radius: 10px;
+}
+.producto {
+    border-bottom: 1px solid #333;
+    padding: 10px 0;
+}
+button {
+    background: gold;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+input {
+    padding: 5px;
+    margin: 5px;
+}
+.login {
+    text-align: center;
+    margin-top: 100px;
+}
+.total {
+    font-size: 20px;
+}
+textarea {
+    width: 100%;
+    height: 100px;
+    background: black;
+    color: white;
+    border: 1px solid gold;
+}
+</style>
+</head>
+
+<body>
+
+<header>DETALLITOS VIVI</header>
+
+<div class="login" id="login">
+    <h2>Login</h2>
+    <input type="text" id="user" placeholder="Usuario"><br>
+    <input type="password" id="pass" placeholder="Contraseña"><br>
+    <button onclick="entrar()">Entrar</button>
+</div>
+
+<div class="container" id="app">
+<div style="display:flex">
+
+<div class="productos">
+<h2>Productos</h2>
+<input type="text" id="buscador" placeholder="Buscar..." onkeyup="buscar()">
+<div id="listaProductos"></div>
+</div>
+
+<div class="factura">
+<h2>Factura</h2>
+<div id="factura"></div>
+
+<div class="total">Total: RD$ <span id="total">0</span></div>
+<button onclick="imprimir()">🧾 Imprimir Factura</button>
+
+<h3>PAPEL</h3>
+<textarea id="papel"></textarea>
+</div>
+
+</div>
+</div>
+
+<script>
+let usuarioActual = "";
+
+// 🔥 BORRA PRODUCTOS VIEJOS AUTOMÁTICAMENTE
+localStorage.removeItem("productos");
+
+// ✅ PRODUCTOS NUEVOS
+let productos = [
+    {nombre:"Lápices (grafito, de colores)", precio:0, stock:50},
+    {nombre:"Bolígrafos (azul, negro, rojo)", precio:0, stock:50},
+    {nombre:"Marcadores (permanentes y de pizarra)", precio:0, stock:50},
+    {nombre:"Resaltadores", precio:0, stock:50},
+    {nombre:"Corrector líquido", precio:0, stock:50},
+    {nombre:"Cinta adhesiva", precio:0, stock:50},
+    {nombre:"Sacapuntas", precio:0, stock:50},
+    {nombre:"Borradores", precio:0, stock:50},
+    {nombre:"Cuadernos (rayados, cuadriculados, blanco)", precio:0, stock:50},
+    {nombre:"Libretas", precio:0, stock:50},
+    {nombre:"Hojas sueltas (blancas, de colores)", precio:0, stock:50},
+    {nombre:"Resmas de papel", precio:0, stock:50},
+    {nombre:"Cartulina", precio:0, stock:50},
+    {nombre:"Papel construcción", precio:0, stock:50},
+    {nombre:"Papel de regalo", precio:0, stock:50},
+    {nombre:"Carpetas plásticas", precio:0, stock:50},
+    {nombre:"Carpetas cartón (folder)", precio:0, stock:50},
+    {nombre:"Archivadores", precio:0, stock:50},
+    {nombre:"Separadores", precio:0, stock:50},
+    {nombre:"Clips", precio:0, stock:50},
+    {nombre:"Grapadoras y grapas", precio:0, stock:50},
+    {nombre:"Ligas (bandas elásticas)", precio:0, stock:50},
+    {nombre:"Tijeras", precio:0, stock:50},
+    {nombre:"Reglas", precio:0, stock:50},
+    {nombre:"Compás", precio:0, stock:50},
+    {nombre:"Transportador", precio:0, stock:50},
+    {nombre:"Cutter (exacto)", precio:0, stock:50},
+    {nombre:"Crayones", precio:0, stock:50},
+    {nombre:"Pinturas (acuarela, témpera)", precio:0, stock:50},
+    {nombre:"Pinceles", precio:0, stock:50},
+    {nombre:"Lápices de colores", precio:0, stock:50},
+    {nombre:"Plastilina", precio:0, stock:50},
+    {nombre:"Pegamento (barra)", precio:0, stock:50},
+    {nombre:"Pegamento (líquido)", precio:0, stock:50},
+    {nombre:"Sobres (#8, #10, #12, #16)", precio:0, stock:50},
+    {nombre:"Etiquetas", precio:0, stock:50},
+    {nombre:"Post-it (notas adhesivas)", precio:0, stock:50},
+    {nombre:"Calculadoras", precio:0, stock:50},
+    {nombre:"Mochilas", precio:0, stock:50},
+    {nombre:"Loncheras", precio:0, stock:50},
+    {nombre:"Estuches (cartucheras)", precio:0, stock:50}
+];
+
+let total = 0;
+
+// LOGIN
+function entrar() {
+    let u = document.getElementById("user").value;
+    let p = document.getElementById("pass").value;
+
+    if (
+        (u === "Andy" && p === "2309") ||
+        (u === "Vivi" && p === "1102")
+    ) {
+        usuarioActual = u;
+        document.getElementById("login").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        cargarDatosUsuario();
+    } else {
+        alert("Datos incorrectos");
+    }
+}
+
+// MOSTRAR PRODUCTOS
+function mostrarProductos(lista = productos) {
+    let cont = document.getElementById("listaProductos");
+    cont.innerHTML = "";
+
+    lista.forEach((p, i) => {
+        cont.innerHTML += `
+        <div class="producto">
+            <b>${p.nombre}</b><br>
+            Precio: RD$${p.precio}<br>
+            Stock: ${p.stock}<br>
+            <button onclick="vender(${i})">Vender</button>
+        </div>`;
+    });
+}
+
+// VENDER
+function vender(i) {
+    if(productos[i].stock <= 0){
+        alert("Sin stock");
+        return;
+    }
+
+    productos[i].stock--;
+    total += productos[i].precio;
+
+    document.getElementById("factura").innerHTML += 
+        `<div>${productos[i].nombre} - RD$${productos[i].precio}</div>`;
+
+    document.getElementById("total").innerText = total;
+
+    guardar();
+    mostrarProductos();
+}
+
+// BUSCADOR
+function buscar(){
+    let texto = document.getElementById("buscador").value.toLowerCase();
+    let filtrados = productos.filter(p => 
+        p.nombre.toLowerCase().includes(texto)
+    );
+    mostrarProductos(filtrados);
+}
+
+// GUARDAR
+function guardar(){
+    localStorage.setItem("productos", JSON.stringify(productos));
+    localStorage.setItem("factura_" + usuarioActual, document.getElementById("factura").innerHTML);
+    localStorage.setItem("total_" + usuarioActual, total);
+}
+
+// CARGAR
+function cargarDatosUsuario(){
+    document.getElementById("factura").innerHTML = localStorage.getItem("factura_" + usuarioActual) || "";
+    total = parseInt(localStorage.getItem("total_" + usuarioActual)) || 0;
+    document.getElementById("total").innerText = total;
+    document.getElementById("papel").value = localStorage.getItem("papel_" + usuarioActual) || "";
+    mostrarProductos();
+}
+
+// PAPEL
+document.getElementById("papel").addEventListener("input", () => {
+    if(usuarioActual !== ""){
+        localStorage.setItem("papel_" + usuarioActual, document.getElementById("papel").value);
+    }
+});
+
+// IMPRIMIR
+function imprimir() {
+    let contenido = document.getElementById("factura").innerHTML;
+    let totalFinal = document.getElementById("total").innerText;
+    let fecha = new Date().toLocaleString();
+    let numeroFactura = localStorage.getItem("numeroFactura") || 1;
+
+    let ventana = window.open('', '', 'width=600,height=800');
+
+    ventana.document.write(`
+        <html>
+        <body style="font-family:Arial;text-align:center;">
+        <h2>DETALLITOS VIVI</h2>
+        <p>Factura #${numeroFactura}</p>
+        <p>Cajero: ${usuarioActual}</p>
+        <p>${fecha}</p>
+        <hr>
+        ${contenido}
+        <h3>Total: RD$ ${totalFinal}</h3>
+        <p>Gracias por su compra</p>
+        </body>
+        </html>
+    `);
+
+    ventana.document.close();
+    ventana.print();
+
+    numeroFactura++;
+    localStorage.setItem("numeroFactura", numeroFactura);
+}
+
+// INICIAR
+mostrarProductos();
+</script>
+
+</body>
+</html>
