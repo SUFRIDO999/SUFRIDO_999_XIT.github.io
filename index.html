@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>DETALLITOS VIVI PRO</title>
+
+<style>
+body {font-family:Arial;background:#0a0a0a;color:white;margin:0;}
+header {background:#111;padding:15px;text-align:center;color:gold;}
+.container{display:none;padding:20px}
+.productos,.factura{flex:1;margin:10px;background:#111;padding:15px;border-radius:10px}
+button{background:gold;border:none;padding:5px 10px;cursor:pointer}
+.admin-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:red;color:white;display:none}
+.admin-panel{position:fixed;top:0;left:0;width:100%;height:100%;background:black;display:none;padding:20px;overflow:auto}
+canvas{background:white}
+</style>
+</head>
+
+<body>
+
+<header>DETALLITOS VIVI PRO</header>
+
+<div id="login">
+<input id="user" placeholder="Usuario"><br>
+<input id="pass" type="password"><br>
+<button onclick="login()">Entrar</button>
+</div>
+
+<div class="container" id="app">
+<div style="display:flex">
+
+<div class="productos">
+<h2>Productos</h2>
+<div id="lista"></div>
+</div>
+
+<div class="factura">
+<h2>Factura</h2>
+<div id="factura"></div>
+<h3>Total: RD$ <span id="total">0</span></h3>
+<button onclick="imprimir()">🧾</button>
+</div>
+
+</div>
+</div>
+
+<button class="admin-btn" id="adminBtn" onclick="abrirAdmin()">👑</button>
+
+<div class="admin-panel" id="admin">
+<h2>Panel Dueño</h2>
+<button onclick="cerrarAdmin()">Cerrar</button>
+
+<h3>Historial</h3>
+<div id="historial"></div>
+
+<h3>Gráfica</h3>
+<canvas id="grafica" width="300" height="200"></canvas>
+
+<button onclick="reset()">❌ Resetear todo</button>
+</div>
+
+<script>
+// "BASE DE DATOS"
+let db = JSON.parse(localStorage.getItem("db")) || {
+users:[
+{user:"Andy",pass:"2309",rol:"dueno"},
+{user:"Vivi",pass:"1102",rol:"cajero"}
+],
+ventas:[]
+};
+
+let usuario=null;
+let total=0;
+
+let productos=[
+{name:"Lápiz",precio:0,stock:50},
+{name:"Cuaderno",precio:0,stock:50},
+{name:"Mochila",precio:0,stock:50}
+];
+
+// LOGIN REAL
+function login(){
+let u=user.value;
+let p=pass.value;
+
+let encontrado=db.users.find(x=>x.user===u && x.pass===p);
+
+if(!encontrado){alert("Error");return;}
+
+usuario=encontrado;
+
+login.style.display="none";
+app.style.display="block";
+
+if(usuario.rol==="dueno"){
+adminBtn.style.display="block";
+}
+
+mostrar();
+}
+
+// MOSTRAR PRODUCTOS
+function mostrar(){
+lista.innerHTML="";
+productos.forEach((p,i)=>{
+lista.innerHTML+=`
+<div>
+${p.name} - RD$${p.precio} - Stock:${p.stock}
+<button onclick="vender(${i})">+</button>
+</div>`;
+});
+}
+
+// VENDER
+function vender(i){
+if(productos[i].stock<=0)return;
+
+productos[i].stock--;
+total+=productos[i].precio;
+
+factura.innerHTML+=`<div>${productos[i].name}</div>`;
+totalEl.innerText=total;
+
+// GUARDAR VENTA
+db.ventas.push({
+user:usuario.user,
+producto:productos[i].name,
+fecha:new Date().toLocaleString()
+});
+
+guardarDB();
+}
+
+// GUARDAR DB
+function guardarDB(){
+localStorage.setItem("db",JSON.stringify(db));
+}
+
+// ADMIN
+function abrirAdmin(){
+admin.style.display="block";
+cargarAdmin();
+}
+function cerrarAdmin(){
+admin.style.display="none";
+}
+
+// HISTORIAL + GRAFICA
+function cargarAdmin(){
+historial.innerHTML="";
+
+let conteo={};
+
+db.ventas.forEach(v=>{
+historial.innerHTML+=`<div>${v.user} - ${v.producto}</div>`;
+conteo[v.producto]=(conteo[v.producto]||0)+1;
+});
+
+dibujarGrafica(conteo);
+}
+
+// GRAFICA SIMPLE
+function dibujarGrafica(data){
+let c=document.getElementById("grafica");
+let ctx=c.getContext("2d");
+
+ctx.clearRect(0,0,300,200);
+
+let keys=Object.keys(data);
+let max=Math.max(...Object.values(data),1);
+
+keys.forEach((k,i)=>{
+let val=data[k];
+let h=(val/max)*150;
+
+ctx.fillRect(i*60+20,180-h,40,h);
+ctx.fillText(k, i*60+20,195);
+});
+}
+
+// RESET
+function reset(){
+localStorage.clear();
+location.reload();
+}
+
+// IMPRIMIR
+function imprimir(){
+window.print();
+}
+
+mostrar();
+</script>
+
+</body>
+  </html>
