@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>DETALLITOS VIVI PRO</title>
+
+<style>
+body{font-family:Arial;background:#0a0a0a;color:white;margin:0}
+header{background:#111;padding:15px;text-align:center;color:gold}
+.container{display:none;padding:20px}
+.productos,.factura{flex:1;margin:10px;background:#111;padding:15px;border-radius:10px}
+button{background:gold;border:none;padding:6px 10px;margin:3px;cursor:pointer}
+.admin-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:red;color:white;display:none}
+.admin-panel{position:fixed;top:0;left:0;width:100%;height:100%;background:black;display:none;padding:20px;overflow:auto}
+input{margin:5px;padding:5px}
+canvas{background:white}
+</style>
+</head>
+
+<body>
+
+<header>DETALLITOS VIVI PRO</header>
+
+<div id="loginBox">
+<input id="user" placeholder="Usuario"><br>
+<input id="pass" type="password" placeholder="Contraseña"><br>
+<button id="btnLogin">Entrar</button>
+</div>
+
+<div class="container" id="app">
+<div style="display:flex">
+
+<div class="productos">
+<h2>Productos</h2>
+
+<input id="buscador" placeholder="Buscar..." onkeyup="buscarProducto()">
+
+<div id="lista"></div>
+</div>
+
+<div class="factura">
+<h2>Factura</h2>
+<div id="factura"></div>
+<h3>Total: RD$ <span id="total">0</span></h3>
+<button id="btnPrint">🧾 Imprimir</button>
+</div>
+
+</div>
+</div>
+
+<button class="admin-btn" id="adminBtn">👑</button>
+
+<div class="admin-panel" id="adminPanel">
+
+<h2>👑 Panel Dueño</h2>
+<button onclick="cerrarAdmin()">Cerrar</button>
+
+<h3>📊 Dashboard</h3>
+<div id="dashboard"></div>
+
+<h3>🧾 Historial</h3>
+<div id="historial"></div>
+
+<h3>📊 Gráfica</h3>
+<canvas id="grafica" width="300" height="200"></canvas>
+
+</div>
+
+<script>
+
+// ===== BASE =====
+function getDB(){
+let base={
+users:[
+{user:"Andy",pass:"2309",rol:"dueno"},
+{user:"Vivi",pass:"1102",rol:"cajero"}
+],
+ventas:[]
+};
+
+try{
+let d=JSON.parse(localStorage.getItem("db"));
+if(!d||!d.users) throw "error";
+return d;
+}catch{
+localStorage.setItem("db",JSON.stringify(base));
+return base;
+}
+}
+
+let db=getDB();
+let usuario=null;
+let total=0;
+
+// ===== PRODUCTOS =====
+let productos=[
+{name:"Lápices",precio:10,stock:50},
+{name:"Bolígrafos",precio:15,stock:50},
+{name:"Marcadores",precio:35,stock:50},
+{name:"Cuadernos",precio:75,stock:50},
+{name:"Cuadernos en blanco",precio:100,stock:50},
+{name:"Cuadernos cuadriculados",precio:100,stock:50},
+{name:"Libretas",precio:80,stock:50},
+{name:"Cartulina",precio:25,stock:50},
+{name:"Cartulina negra y roja",precio:40,stock:50},
+{name:"Tijeras",precio:80,stock:50},
+{name:"Reglas",precio:60,stock:50},
+{name:"Pegamento1",precio:30,stock:50},
+{name:"Pegamento2",precio:45,stock:50},
+{name:"Pegamento3",precio:65,stock:50},
+{name:"borras",precio:15,stock:50},
+{name:"Mochilas",precio:500,stock:50}
+];
+
+// ===== LOGIN =====
+document.getElementById("btnLogin").onclick=function(){
+let u=user.value.trim();
+let p=pass.value.trim();
+
+if(!u||!p)return alert("Completa datos");
+
+db=getDB();
+
+let ok=db.users.find(x=>x.user.toLowerCase()===u.toLowerCase()&&x.pass===p);
+if(!ok)return alert("Datos incorrectos");
+
+usuario=ok;
+
+loginBox.style.display="none";
+app.style.display="block";
+
+if(usuario.rol==="dueno"){
+adminBtn.style.display="block";
+}
+
+renderProductos();
+};
+
+// ===== MOSTRAR =====
+function renderProductos(lista=productos){
+listaEl=document.getElementById("lista");
+listaEl.innerHTML="";
+
+lista.forEach((p,i)=>{
+listaEl.innerHTML+=`
+<div>
+${p.name} - RD$${p.precio} - Stock:${p.stock}
+<button onclick="vender(${i})">+</button>
+</div>`;
+});
+}
+
+// ===== BUSCAR =====
+function buscarProducto(){
+let t=buscador.value.toLowerCase();
+let f=productos.filter(p=>p.name.toLowerCase().includes(t));
+renderProductos(f);
+}
+
+// ===== VENDER =====
+function vender(i){
+if(productos[i].stock<=0){
+alert("Sin stock");
+return;
+}
+
+productos[i].stock--;
+total+=productos[i].precio;
+
+factura.innerHTML+=`<div>${productos[i].name} - RD$${productos[i].precio}</div>`;
+document.getElementById("total").innerText=total;
+
+// 📅 REPORTE MENSUAL
+let fecha=new Date();
+let mes=fecha.getFullYear()+"-"+(fecha.getMonth()+1);
+
+db.ventas.push({
+user:usuario.user,
+producto:productos[i].name,
+precio:productos[i].precio,
+fecha:fecha.toLocaleString(),
+mes:mes
+});
+
+localStorage.setItem("db",JSON.stringify(db));
+
+// 🔄 ACTUALIZA
+renderProductos();
+}
+
+// ===== ADMIN =====
+adminBtn.onclick=()=>{
+adminPanel.style.display="block";
+cargarAdmin();
+};
+
+function cerrarAdmin(){
+adminPanel.style.display="none";
+}
+
+// ===== DASHBOARD =====
+function cargarAdmin(){
+
+let porMes={},porProd={};
+
+db.ventas.forEach(v=>{
+porProd[v.producto]=(porProd[v.producto]||0)+1;
+
+if(!porMes[v.mes]){
+porMes[v.mes]={ventas:0,total:0};
+}
+
+porMes[v.mes].ventas++;
+porMes[v.mes].total+=v.precio;
+});
+
+let html="<h4>📅 Reporte mensual</h4>";
+
+for(let m in porMes){
+html+=`<div>${m} → Ventas:${porMes[m].ventas} | RD$${porMes[m].total}</div>`;
+}
+
+dashboard.innerHTML=html;
+
+mostrarHistorial();
+dibujarGrafica(porProd);
+}
+
+// ===== HISTORIAL =====
+function mostrarHistorial(){
+historial.innerHTML="";
+db.ventas.forEach(v=>{
+historial.innerHTML+=`<div>${v.user} - ${v.producto} - ${v.fecha}</div>`;
+});
+}
+
+// ===== GRAFICA =====
+function dibujarGrafica(data){
+let ctx=grafica.getContext("2d");
+ctx.clearRect(0,0,300,200);
+
+let k=Object.keys(data);
+let max=Math.max(...Object.values(data),1);
+
+k.forEach((x,i)=>{
+let h=(data[x]/max)*150;
+ctx.fillRect(i*60+20,180-h,40,h);
+ctx.fillText(x,i*60+20,195);
+});
+}
+
+// ===== IMPRIMIR =====
+btnPrint.onclick=()=>window.print();
+
+</script>
+
+</body>
+  </html>
